@@ -1,0 +1,104 @@
+/* pages/answer-page/answer-page.wxss */
+
+// 整个页面
+.answer-page-container {
+  height: 100vh;
+
+  // 页面头部
+  .answer-header {
+    .header-navList {
+      display: flex;
+      flex-direction: row;
+      justify-content: space-around;
+      .nav-item {
+        padding-left: 20rpx;
+        padding-right: 20rpx;
+        font-size: 32rpx;
+        line-height: 56rpx;
+        color: grey;
+      }
+      .current {
+        border-left: 5rpx solid grey;
+        border-right: 5rpx solid grey;
+        font-weight: 600;
+        color: black;
+      }
+    }
+  }
+
+  // 页面内容
+  .answer-container {
+    height: 80%;
+    .question-list {
+      height: 100%;
+      padding-left: 50rpx;
+      padding-right: 50rpx;
+      .question-item {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        .item-title {
+          margin-top: 30rpx;
+          font-size: 36rpx;
+          font-weight: 600;
+        }
+        .item-textarea{
+          padding: 20rpx;
+          margin-top: 30rpx;
+          border: 1rpx darkgray solid;
+        }
+        .item-options {
+          font-size: 32rpx;
+          margin-top: 40rpx;
+          .option-item {
+            width: 500rpx;
+            padding: 30rpx 40rpx 30rpx 40rpx;
+            background-color: #F3F3F3;
+            border: 5rpx solid #ffffff;
+          }
+          .current-option-item{
+            background-color: rgb(200, 200, 200);
+            font-weight: 600;
+          }
+        }
+        .item-key{
+          margin-top: 40rpx;
+          margin-left: 30rpx;
+          margin-right: 30rpx;
+          color: red;
+        }
+      }
+
+
+    }
+  }
+
+  // 页面底部
+  .answer-footer {
+
+    .footer-nav {
+      display: flex;
+      flex-direction: row;
+      justify-content: center;
+      line-height: 72rpx;
+      font-size: 36rpx;
+
+      view {
+        margin-left: 5rpx;
+        margin-right: 5rpx;
+        width: 150rpx;
+        font-weight: 600;
+        background-color: #F3F3F3;
+        text-align: center;
+      }
+    }
+  }
+}
+.comming-soon{
+  margin-top: 500rpx;
+  text-align: center;
+  color: darkgray;
+  font-weight: 500;
+  font-size: large;
+}

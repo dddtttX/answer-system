@@ -1,0 +1,7 @@
+<!--pages/select-page/select-page.wxml-->
+<view class="select-page-container">
+  <view class="select-title">请选择题目</view>
+  <view class="type-list">
+    <view class="type-item" wx:for="{{questionType}}" bindtap="goToAnswerTap" wx:key="index" data-type="{{index}}">{{item}}</view>
+  </view>
+</view>

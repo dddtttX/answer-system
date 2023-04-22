@@ -1,0 +1,33 @@
+<!--pages/result-page/result-page.wxml-->
+<view class="result-page-container">
+  <!-- 单选，多选 -->
+  <view class="result-title" wx:if="{{currentNavTab == 0 || currentNavTab == 1}}">您做对了 {{count}} 道题目</view>
+  <view class="result-title" wx:if="{{currentNavTab == 0 || currentNavTab == 1}}">你的正确率为 {{(accuracyRate)}}%</view>
+  <view class="result-title" wx:if="{{currentNavTab == 2}}">点击题号查看问答题解析</view>
+
+  <view class="result-list">
+    <view class="item-dot {{currentQuestionListState[index] == '-1' || currentQuestionListState[index] == '0' ? 'wrong-item-underline' : ''}} {{currentTapItem == index ? currentShowItemColor : ''}}" wx:for="{{questionBank}}" wx:key="index" bind:tap="handleGetTheKeyItem" data-index="{{index}}">
+      {{ index+1 }}
+    </view>
+    <view class="result-item" wx:if="{{isShowCurrentShowItem}}">
+      <view class="item-title">[题目{{currentShowItem.id}} ]：{{currentShowItem.title}}</view>
+      <view class="item-options" wx:for="{{currentShowItem.options}}" wx:key="optionIndex" wx:for-item="option">
+        <view>{{option.optionId}}、{{option.title}}</view>
+      </view>
+      <!-- 单选题正确答案 -->
+      <view class="item-answer" wx:if="{{currentNavTab == 0}}">[正确答案]:{{currentShowItem.answer.optionId}}、{{currentShowItem.answer.title}}</view>
+      <!-- 多选题正确答案 -->
+      <view class="item-answer" wx:if="{{currentNavTab == 1}}">[正确答案]:{{correctAnswer}}</view>
+      <!-- 问答题你的答案 -->
+      <view class="item-your-answer" wx:if="{{currentNavTab == 2}}">[你的答案]:{{yourAnswer}}</view>
+      <view class="item-key">[解析]:{{currentShowItem.key}}</view>
+    </view>
+  </view>
+</view>
+
+<view class="result-page-footer">
+  <view class="footer-banner">
+    <button class="footer-title" bindtap="handleToIndexPage">首页</button>
+    <button class="footer-title" bindtap="goSelectPage">继续练习</button>
+  </view>
+</view>

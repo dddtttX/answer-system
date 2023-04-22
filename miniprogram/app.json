@@ -1,0 +1,15 @@
+{
+  "pages": [
+    "pages/index-page/index-page",
+    "pages/select-page/select-page",
+    "pages/answer-page/answer-page",
+    "pages/result-page/result-page"
+  ],
+  "window": {
+    "backgroundTextStyle": "light",
+    "navigationBarBackgroundColor": "#fff",
+    "navigationBarTextStyle": "black"
+  },
+  "style": "v2",
+  "sitemapLocation": "sitemap.json"
+}

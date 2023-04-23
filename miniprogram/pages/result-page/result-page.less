@@ -29,6 +29,11 @@
       color: #2ba245;
     }
 
+    .not-selected-item{
+      border: 2rpx black solid ;
+      color: black
+    }
+
     .wrong-item-underline {
       border: 5rpx #ef3e21 solid;
       color: #ef3e21;
@@ -83,13 +88,15 @@
   width: 100%;
   position: fixed;
   bottom: 0rpx;
+  background: linear-gradient(to top,rgba(255,255,255,1),rgba(255,255,255,0));
   .footer-banner {
-    background: linear-gradient(to top,#f7f7f7, #ffffff);
+    bottom: 0rpx;
     display: flex;
     flex-direction: row;
     justify-content: center;
   }
   .footer-title {
+    bottom: 0rpx;
     border: 1rpx solid grey;
     width: 250rpx;
     border-radius: 50rpx;

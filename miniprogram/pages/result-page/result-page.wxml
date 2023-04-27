@@ -3,7 +3,7 @@
   <!-- 单选，多选 -->
   <view class="result-title" wx:if="{{currentNavTab == 0 || currentNavTab == 1}}">您做对了 {{count}} 道题目</view>
   <view class="result-title" wx:if="{{currentNavTab == 0 || currentNavTab == 1}}">你的正确率为 {{(accuracyRate)}}%</view>
-  <view class="result-title" wx:if="{{currentNavTab == 2}}">点击题号查看问答题解析</view>
+  <view class="result-title" style="color: black; margin-top: 20rpx; font-size: 28rpx;" wx:if="{{isShow}}">点击题号查看解析</view>
 
   <view class="result-list">
     <view class="item-dot {{currentQuestionListState[index] == '-1' || currentQuestionListState[index] == '0' ? 'wrong-item-underline' : ''}} {{currentTapItem == index ? currentShowItemColor : ''}}" wx:for="{{questionBank}}" wx:key="index" bind:tap="handleGetTheKeyItem" data-index="{{index}}">

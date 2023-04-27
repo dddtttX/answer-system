@@ -1,10 +1,10 @@
 <!--pages/index-page/index-page.wxml-->
 
-<view class="index-page-container" hover-class="none" hover-stop-propagation="false">
-    <view class="index-title" >
-        欢迎来到简易答题系统
-    </view>
-    <button class="index-button" bind:tap="goSelectPage">
-        点击选择套题 
-    </button>
+<view class="index-page-container">
+  <view>
+    <image class="banner-img" src="./image/banner.png" mode="widthFix"></image>
+  </view>
+  <button class="index-button" bind:tap="goSelectPage">
+    点击选择套题
+  </button>
 </view>

@@ -17,6 +17,7 @@ Page({
         accuracyRate: "", //正确率
         valueList: [] as any, //问答题填写情况
         yourAnswer: "", //当前题目下你的答案
+        isShow:true, //点击查看解析这句话
     },
     // 设定回退页面为主页
     handleToIndexPage() {
@@ -59,6 +60,7 @@ Page({
             isShowCurrentShowItem: true,
             currentShowItemColor: className,
             currentTapItem: index,
+            isShow:false
         })
         if (this.data.currentNavTab == 1 || this.data.currentNavTab == 2) {
             this.handleGetTheCorrectAnswer(currentShowItem)

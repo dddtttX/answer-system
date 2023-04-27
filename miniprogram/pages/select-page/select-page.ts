@@ -8,6 +8,7 @@ Page({
     questionType:["单选题","多选题","问答题","套题",]
   },
 
+
   goToAnswerTap(e:any){
     let type = e.target.dataset.type
     wx.navigateTo({
@@ -20,6 +21,18 @@ Page({
    * 生命周期函数--监听页面加载
    */
   onLoad() {
+    wx.request({
+      url:"www.xdtwebsite.top",
+      method:"GET",
+      success: function (req,res,err){
+        if (err) {
+          return
+        }else{
+          return res.data
+        }
+        
+      }
+    })
 
   },
 

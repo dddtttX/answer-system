@@ -1,4 +1,4 @@
-<!--pages/result-page/result-page.wxml-->
+<!-- pages/result-page/result-page.wxml -->
 <view class="result-page-container">
   <!-- 单选，多选 -->
   <view class="result-title" wx:if="{{currentNavTab == 0 || currentNavTab == 1}}">您做对了 {{count}} 道题目</view>
@@ -6,7 +6,18 @@
   <view class="result-title" style="color: black; margin-top: 20rpx; font-size: 28rpx;" wx:if="{{isShow}}">点击题号查看解析</view>
 
   <view class="result-list">
-    <view class="item-dot {{currentQuestionListState[index] == '-1' || currentQuestionListState[index] == '0' ? 'wrong-item-underline' : ''}} {{currentTapItem == index ? currentShowItemColor : ''}}" wx:for="{{questionBank}}" wx:key="index" bind:tap="handleGetTheKeyItem" data-index="{{index}}">
+    <view
+      wx:if="{{currentNavTab == 0 || currentNavTab == 1}}" 
+      wx:for="{{questionBank}}" wx:key="index"  data-index="{{index}}"
+      class="item-dot {{currentQuestionListState[index] == '-1' || currentQuestionListState[index] == '0' ? 'wrong-item-underline' : ''}}{{currentTapItem == index ? currentShowItemColor : ''}}" 
+      bind:tap="handleGetTheKeyItem">
+      {{ index+1 }}
+    </view>
+      <view
+      wx:if="{{currentNavTab == 2}}" 
+      wx:for="{{questionBank}}" wx:key="index"  data-index="{{index}}"
+      class="item-dot not-selected-item {{currentTapItem == index ? 'true-item': ''}}" 
+      bind:tap="handleGetTheKeyItem">
       {{ index+1 }}
     </view>
     <view class="result-item" wx:if="{{isShowCurrentShowItem}}">
@@ -15,7 +26,9 @@
         <view>{{option.optionId}}、{{option.title}}</view>
       </view>
       <!-- 单选题正确答案 -->
-      <view class="item-answer" wx:if="{{currentNavTab == 0}}">[正确答案]:{{currentShowItem.answer.optionId}}、{{currentShowItem.answer.title}}</view>
+      <view class="item-answer" wx:if="{{currentNavTab == 0}}">
+        [正确答案]:{{currentShowItem.answer.optionId}}、{{currentShowItem.answer.title}}
+      </view>
       <!-- 多选题正确答案 -->
       <view class="item-answer" wx:if="{{currentNavTab == 1}}">[正确答案]:{{correctAnswer}}</view>
       <!-- 问答题你的答案 -->

@@ -126,7 +126,7 @@ Page({
 
     ],
     // 题目类型
-    questionType: ["单选题", "多选题", "问答题", "套题"],
+    questionType: ["单选题", "多选题", "填空题", "问答题"],
     currentNavTab: 0, //当前题库索引
     currentQuestionItemTab: 0, //当前题目在题库的索引
     currentTabQuestionTotalCount: 0, //当前题库的总题目数量
@@ -136,6 +136,24 @@ Page({
     valueList: [] as any, //问答题答案存储
 
   },
+  // 初始化题库
+  InitQuestionList(type:any) {
+    type += ""
+    wx.request({
+      url: "http://localhost:3001/api/get_questions_list_no_answer_by_TYPE",
+      method: "GET",
+      data: {
+        type,
+      },
+      header: {
+        'content-type': 'application/json'
+      },
+      success: function (res) {
+        console.log(res.data)
+      }
+    })
+  },
+
   // 进入页面时选择默认tab
   enterPageCurrentTap(option: any) {
     let currentNavTab = Number(option.type)
@@ -190,6 +208,8 @@ Page({
           })
           // 获取currentQuestionListState
           that.getCurrentQuestionListState(index)
+          // 初始化
+          that.InitQuestionList(that.data.currentNavTab)
         } else {//这里是点击了取消以后
           return
         }
@@ -394,7 +414,7 @@ Page({
    */
   onLoad(option) {
     this.enterPageCurrentTap(option)
-
+    this.InitQuestionList(this.data.currentNavTab)
   },
 
   /**
@@ -409,4 +429,5 @@ Page({
    */
   onShow() {
   },
+
 })

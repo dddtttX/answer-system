@@ -1,10 +1,10 @@
 <!--pages/index-page/index-page.wxml-->
 
 <view class="index-page-container" hover-class="none" hover-stop-propagation="false">
-    <view class="index-title" >
+    <view class="index-title"  style="position: relative; left: 0rpx; top: -24rpx">
         欢迎来到简易答题系统
     </view>
-    <button class="index-button" bind:tap="goSelectPage">
+    <button class="index-button" bind:tap="goSelectPage" style="position: relative; left: 0rpx; top: -46rpx">
         点击选择套题 
     </button>
 </view>

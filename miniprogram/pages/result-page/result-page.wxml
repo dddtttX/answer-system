@@ -1,43 +1,66 @@
+<wxs src="../answer-page/answer-page.wxs" module="formatIndex"></wxs>
 <!-- pages/result-page/result-page.wxml -->
 <view class="result-page-container">
   <!-- 单选，多选 -->
-  <view class="result-title" wx:if="{{currentNavTab == 0 || currentNavTab == 1}}">您做对了 {{count}} 道题目</view>
-  <view class="result-title" wx:if="{{currentNavTab == 0 || currentNavTab == 1}}">你的正确率为 {{(accuracyRate)}}%</view>
-  <view class="result-title" style="color: black; margin-top: 20rpx; font-size: 28rpx;" wx:if="{{isShow}}">点击题号查看解析</view>
-
+  <view class="result-title" wx:if="{{currentNavTab == 0 || currentNavTab == 1}}">
+    您做对了 {{count}} 道题目
+  </view>
+  <view class="result-title" wx:if="{{currentNavTab == 0 || currentNavTab == 1}}">
+    你的正确率为 {{(accuracyRate)}}%
+  </view>
+  <view class="result-title" style="color: grey; margin-top: 20rpx; font-size: 28rpx;">
+    点击题号查看解析
+  </view>
   <view class="result-list">
-    <view
-      wx:if="{{currentNavTab == 0 || currentNavTab == 1}}" 
-      wx:for="{{questionBank}}" wx:key="index"  data-index="{{index}}"
-      class="item-dot {{currentQuestionListState[index] == '-1' || currentQuestionListState[index] == '0' ? 'wrong-item-underline' : ''}}{{currentTapItem == index ? currentShowItemColor : ''}}" 
-      bind:tap="handleGetTheKeyItem">
+    <!-- 选择题：单选、多选 -->
+    <view wx:if="{{currentNavTab == 0 || currentNavTab == 1}}" wx:for="{{questionBank}}" wx:key="index" data-index="{{index}}" class="item-dot {{currentQuestionListState[index] == '-1' || currentQuestionListState[index] == '0' ? 'wrong-item-underline' : ''}} {{currentTapItem == index ? currentShowItemColor : ''}}" bind:tap="handleGetTheKeyItem">
       {{ index+1 }}
     </view>
-      <view
-      wx:if="{{currentNavTab == 2}}" 
-      wx:for="{{questionBank}}" wx:key="index"  data-index="{{index}}"
-      class="item-dot not-selected-item {{currentTapItem == index ? 'true-item': ''}}" 
-      bind:tap="handleGetTheKeyItem">
+    <!-- 填空题？ -->
+    <view wx:if="{{currentNavTab == 3}}" wx:for="{{questionBank}}" wx:key="index" data-index="{{index}}" class="item-dot not-selected-item {{currentTapItem == index ? 'true-item': ''}}" bind:tap="handleGetTheKeyItem">
       {{ index+1 }}
     </view>
     <view class="result-item" wx:if="{{isShowCurrentShowItem}}">
-      <view class="item-title">[题目{{currentShowItem.id}} ]：{{currentShowItem.title}}</view>
-      <view class="item-options" wx:for="{{currentShowItem.options}}" wx:key="optionIndex" wx:for-item="option">
-        <view>{{option.optionId}}、{{option.title}}</view>
+      <view class="item-title">[题目{{currentTapItem+1}} ]：{{currentShowItem.title}}</view>
+      <!-- 单选选项、答案 -->
+      <view wx:if="{{currentNavTab == 0}}">
+        <!-- 单选选项 -->
+        <view class="item-options {{currentShowItem.answers[0] == selectedOption[currentTapItem] && currentShowItem.answers[0] == optionIndex  ? 'item-options-correct' : currentShowItem.answers[0] !== selectedOption[currentTapItem] && selectedOption[currentTapItem] == optionIndex ? 'item-options-false' : '' }} " wx:for="{{currentShowItem.options}}" wx:for-index="optionIndex" wx:for-item="option">
+          <view>{{formatIndex.formatIndex(optionIndex)}} 、{{option}}</view>
+        </view>
+        <!-- 单选题正确答案 -->
+        <view class="item-answer {{currentQuestionListState[currentTapItem] == 1  ? 'true-item-result' : ''}} ">
+          [正确答案]
+          <view wx:for="{{currentShowItem.answers}}" wx:for-item="answer">
+            {{formatIndex.formatIndex(answer)}}、{{currentShowItem.options[answer]}}
+          </view>
+        </view>
       </view>
-      <!-- 单选题正确答案 -->
-      <view class="item-answer" wx:if="{{currentNavTab == 0}}">
-        [正确答案]:{{currentShowItem.answer.optionId}}、{{currentShowItem.answer.title}}
+      <!-- 多选选项、答案 -->
+      <view wx:if="{{currentNavTab == 1}}">
+        <!-- 多选选项 -->
+        <view class="item-options" wx:for="{{currentShowItem.options}}" wx:for-index="optionIndex" wx:for-item="option">
+          <view>{{formatIndex.formatIndex(optionIndex)}} 、{{option}}</view>
+        </view>
+        <!-- 多选你的答案 -->
+        <view class="item-your-answer {{currentQuestionListState[currentTapItem] == 1 ? 'true-item-result' : ''}}" >[你的答案]:{{yourAnswer}}</view>
+        <!-- 多选题正确答案 -->
+        <view class="item-answer {{currentQuestionListState[currentTapItem] == 1 ? 'true-item-result' : ''}} ">
+          [正确答案]:
+          <view wx:for="{{currentShowItem.answers}}" wx:for-item="answer">
+            {{formatIndex.formatIndex(answer)}}、{{currentShowItem.options[answer]}}
+          </view>
+        </view>
       </view>
-      <!-- 多选题正确答案 -->
-      <view class="item-answer" wx:if="{{currentNavTab == 1}}">[正确答案]:{{correctAnswer}}</view>
       <!-- 问答题你的答案 -->
-      <view class="item-your-answer" wx:if="{{currentNavTab == 2}}">[你的答案]:{{yourAnswer}}</view>
-      <view class="item-key">[解析]:{{currentShowItem.key}}</view>
+      <view class="item-your-answer" wx:if="{{currentNavTab == 3}}">[你的答案]:{{yourAnswer}}</view>
+      <view class="item-key {{currentQuestionListState[currentTapItem] == 1  ? 'true-item-result' : ''}}">
+        [解析]
+        <view>{{currentShowItem.key}}</view>
+      </view>
     </view>
   </view>
 </view>
-
 <view class="result-page-footer">
   <view class="footer-banner">
     <button class="footer-title" bindtap="handleToIndexPage">首页</button>

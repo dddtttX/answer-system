@@ -5,6 +5,25 @@
     "compileHotReLoad": true,
     "urlCheck": false
   },
-  "condition": {},
+  "condition": {
+    "miniprogram": {
+      "list": [
+        {
+          "name": "多选题",
+          "pathName": "pages/answer-page/answer-page",
+          "query": "type=1",
+          "launchMode": "default",
+          "scene": null
+        },
+        {
+          "name": "问答题",
+          "pathName": "pages/answer-page/answer-page",
+          "query": "type=3",
+          "launchMode": "default",
+          "scene": null
+        }
+      ]
+    }
+  },
   "libVersion": "2.31.0"
 }

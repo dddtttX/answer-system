@@ -5,15 +5,15 @@
 
   .result-title {
     text-align: center;
-    font-size: 32rpx;
+    font-size: 36rpx;
     font-weight: 600;
     color: #ef3e21;
   }
 
   .result-list {
     margin-top: 40rpx;
-    padding-left: 70rpx;
-    padding-right: 70rpx;
+    padding-left: 30rpx;
+    padding-right: 30rpx;
     display: flex;
     flex-direction: row;
     justify-content: center;
@@ -25,7 +25,7 @@
       border-radius: 100%;
       text-align: center;
       line-height: 112rpx;
-      font-size: 32rpx;
+      font-size: 36rpx;
       border: 5rpx #2ba245 solid ;
       color: #2ba245;
     }
@@ -42,6 +42,7 @@
 
     .wrong-item {
       background-color: #ef3e21;
+      background-color: #ef3e21;
       color: white;
     }
 
@@ -57,7 +58,7 @@
       display: flex;
       flex-direction: column;
       align-items: flex-start;
-      font-size: 24rpx;
+      font-size: 26rpx;
       background-color: #f7f7f7;
 
       .item-title{
@@ -65,21 +66,35 @@
       }
 
       .item-options{
-        padding-top: 30rpx;
+        padding-top: 20rpx;
+      }
+
+      .item-options-correct{
+        color: #2ba245;
+      }
+
+      .item-options-false{
+        color: red;
+        text-decoration: line-through;
       }
 
       .item-answer {
-        margin-top: 30rpx;
+        margin-top: 10rpx;
         color: red;
       }
+
       .item-your-answer{
-        margin-top: 30rpx;
-        color: black;
+        margin-top: 40rpx;
+        color: gray;
       }
 
       .item-key {
         margin-top: 10rpx;
         color: red;
+      }
+
+      .true-item-result{
+        color: #2ba245;
       }
     }
   }

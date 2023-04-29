@@ -1,3 +1,5 @@
+import { formatIndex } from "../../utils/util"
+
 // pages/result-page/result-page.ts
 Page({
     /**
@@ -5,19 +7,20 @@ Page({
      */
     data: {
         questionBank: [] as any,
-        currentQuestionListState: [] as any,
+        currentQuestionListState: [] as number[],
+        selectedOption: [] as number[],
         score: "", //分数
         count: 0, //正确的题目数量
         currentShowItem: {},
-        currentTapItem: 0, //当前题库下的某道题
+        currentTapItem: -1, //当前题库下的某道题
         currentShowItemColor: "",
         isShowCurrentShowItem: false,
-        currentNavTab: -1, //当前选择题库
+        currentNavTab: -1 as number, //当前选择题库
         correctAnswer: "", //正确答案,用于在错题页面显示
         accuracyRate: "", //正确率
         valueList: [] as any, //问答题填写情况
         yourAnswer: "", //当前题目下你的答案
-        isShow:true, //点击查看解析这句话
+        isShow: true, //点击查看解析这句话
     },
     // 设定回退页面为主页
     handleToIndexPage() {
@@ -32,8 +35,8 @@ Page({
     // 计算错题数
     handleWrongCount() {
         let count = 0
-        this.data.currentQuestionListState.forEach((item: string) => {
-            if (item === "1") {
+        this.data.currentQuestionListState.forEach((item: number) => {
+            if (item === 1) {
                 count++
             }
         })
@@ -54,47 +57,50 @@ Page({
     handleGetTheKeyItem(e: any) {
         let index = e.target.dataset.index
         let currentShowItem = this.data.questionBank[index]
-        let className = this.data.currentQuestionListState[index] == "1" ? "true-item" : "wrong-item"
+        let className = this.data.currentQuestionListState[index] === 1 ? "true-item" : "wrong-item"
         this.setData({
             currentShowItem,
             isShowCurrentShowItem: true,
             currentShowItemColor: className,
             currentTapItem: index,
-            isShow:false
+            isShow: false
         })
-        if (this.data.currentNavTab == 1 || this.data.currentNavTab == 2) {
-            this.handleGetTheCorrectAnswer(currentShowItem)
-        }
+        this.handleGetTheCorrectAnswer(currentShowItem)
     },
-    // 获取你的答案和正确答案，用于在页面显示
+
+    // 问答题获取你的答案和正确答案，用于在页面显示
     handleGetTheCorrectAnswer(arr: any) {
-        if (this.data.currentNavTab == 2) {
+        if (this.data.currentNavTab == 1) {
+            let yourAnswer = ""
+            arr.answers.map((item: any, index: number, arr: any) => {
+                yourAnswer += formatIndex(item)
+                if (index < arr.length - 1) {
+                    yourAnswer += "、"
+                }
+                this.setData({ yourAnswer })
+            })
+        }
+        if (this.data.currentNavTab == 3) {
             let yourAnswer = this.data.valueList[this.data.currentTapItem] || "未填写"
             this.setData({ yourAnswer })
-            return
         }
-        let correctAnswer = ""
-        arr.answer.map((item: any, index: number, arr: any) => {
-            correctAnswer += item.optionId
-            if (index < arr.length - 1) {
-                correctAnswer += "、"
-            }
-        })
-        this.setData({ correctAnswer })
     },
     /**
      * 生命周期函数--监听页面加载
      */
     onLoad(option) {
-        let currentQuestionListState = JSON.parse(option.currentQuestionListState || "")
         let questionsBank = JSON.parse(option.questionsBank || "")
-        let currentNavTab = JSON.parse(option.currentNavTab || "")
-        let valueList = JSON.parse(option.valueList || "")
+        let currentQuestionListState = JSON.parse(option.currentQuestionListState || "")
+        let selectedOption = JSON.parse(option.selectedOption || "")
+        let currentNavTab = Number(option.currentNavTab)
+        let valueList =  JSON.parse(option.valueList || "")
+
         this.setData({
             questionBank: questionsBank || [],
-            currentQuestionListState: currentQuestionListState || "",
+            currentQuestionListState: currentQuestionListState,
             currentNavTab: currentNavTab,
             valueList,
+            selectedOption
         })
         // 调用计算得分函数
         this.handleWrongCount()
@@ -103,17 +109,17 @@ Page({
     /**
      * 生命周期函数--监听页面初次渲染完成
      */
-    onReady() {},
+    onReady() { },
 
     /**
      * 生命周期函数--监听页面显示
      */
-    onShow() {},
+    onShow() { },
 
     /**
      * 生命周期函数--监听页面隐藏
      */
-    onHide() {},
+    onHide() { },
 
     /**
      * 生命周期函数--监听页面卸载
@@ -129,15 +135,15 @@ Page({
     /**
      * 页面相关事件处理函数--监听用户下拉动作
      */
-    onPullDownRefresh() {},
+    onPullDownRefresh() { },
 
     /**
      * 页面上拉触底事件的处理函数
      */
-    onReachBottom() {},
+    onReachBottom() { },
 
     /**
      * 用户点击右上角分享
      */
-    onShareAppMessage() {},
+    onShareAppMessage() { },
 })

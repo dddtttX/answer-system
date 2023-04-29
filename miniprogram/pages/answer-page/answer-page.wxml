@@ -1,43 +1,41 @@
-<!--pages/answer-page/answer-page.wxml-->
+<wxs src="./answer-page.wxs" module="answerUtil"></wxs>
+<!-- pages/answer-page/answer-page.wxml -->
 <view class="answer-page-container">
   <view class="answer-header">
     <view class="header-navList">
-      <view class="nav-item {{currentNavTab === index ? 'current' : '' }}" wx:for="{{questionType}}" wx:key="index" data-index="{{index}}" bindtap="handleChangeCurrentNavTabTap">{{item}}</view>
+      <view class="nav-item {{currentNavTab === index ? 'current' : '' }}" wx:for="{{questionType}}" wx:key="index" data-index="{{index}}" bindtap="handleChangeCurrentNavTabTap">
+        {{item}}
+      </view>
     </view>
   </view>
-  <!-- 单选题 -->
-  <view class="answer-container" wx:if="{{currentNavTab == 0}}">
+  <!-- 选择题：单选，多选 -->
+  <view class="answer-container" wx:if="{{currentNavTab == 0 || currentNavTab == 1}}">
     <swiper class="question-list" bindchange="handleSlideChangeEnd" current="{{currentQuestionItemTab}}">
-      <block wx:for="{{singleAnswerBank}}" wx:for-index="questionIndex" wx:for-item="question">
+      <block wx:for="{{currentTabQuestionBank}}" wx:for-index="questionIndex" wx:for-item="question">
         <swiper-item class="question-item">
           <view class="item-title">{{question.title}}</view>
           <view class="item-options" wx:for="{{question.options}}" wx:for-index="optionIndex" wx:for-item="option">
-            <view class="option-item {{selectedOption[questionIndex] === optionIndex ? 'current-option-item' : ''}}" bindtap="handleSelectOptionTap" data-item="{{option}}">{{option.optionId}}、{{option.title}}</view>
+            <!-- 单选，此处分类为了变色调整 -->
+            <view wx:if="{{currentNavTab == 0}}" class="option-item {{selectedOption[questionIndex] === optionIndex ? 'current-option-item' : ''}}" bindtap="handleSelectOptionTap" data-index="{{optionIndex}}">
+              {{answerUtil.formatIndex(optionIndex)}} 、{{option}}
+            </view>
+            <!-- 多选，此处分类为了变色调整 -->
+            <view wx:if="{{currentNavTab == 1}}" class="option-item {{ answerUtil.indexOf(selectedOption[questionIndex], optionIndex) ? 'current-option-item' : '' }}" bindtap="handleSelectOptionTap" data-index="{{optionIndex}}">
+              {{answerUtil.formatIndex(optionIndex)}} 、{{option}}
+            </view>
           </view>
-          <view class="item-key" wx:if="{{isShowQuestionKey == true}}">解析：{{question.key}}</view>
         </swiper-item>
       </block>
     </swiper>
   </view>
-  <!-- 多选题 -->
-  <view class="answer-container" wx:if="{{currentNavTab == 1}}">
-    <swiper class="question-list" bindchange="handleSlideChangeEnd" current="{{currentQuestionItemTab}}">
-      <block wx:for="{{nonuniqueAnswerBank}}" wx:for-index="questionIndex" wx:for-item="question">
-        <swiper-item class="question-item">
-          <view class="item-title">{{question.title}}</view>
-          <view class="item-options" wx:for="{{question.options}}" wx:for-index="optionIndex" wx:for-item="option">
-            <wxs src="./answer-page.wxs" module="app" />
-            <view class="option-item {{app.indexOf(selectedOption[questionIndex], optionIndex) ? 'current-option-item' : ''}}" bindtap="handleSelectOptionTap" data-item="{{option}}">{{option.optionId}}、{{option.title}}</view>
-          </view>
-          <view class="item-key" wx:if="{{isShowQuestionKey == true}}">解析：{{question.key}}</view>
-        </swiper-item>
-      </block>
-    </swiper>
+  <!-- 填空题 -->
+  <view class="answer-container" wx:if="{{currentNavTab == 2}}">
+    <view class="comming-soon">敬请期待...</view>
   </view>
   <!-- 问答题 -->
-  <view class="answer-container" wx:if="{{currentNavTab == 2}}">
+  <view class="answer-container" wx:if="{{currentNavTab == 3}}">
     <swiper class="question-list" bindchange="handleSlideChangeEnd" current="{{currentQuestionItemTab}}">
-      <block wx:for="{{essayAnswerBank}}" wx:for-index="questionIndex" wx:for-item="question">
+      <block wx:for="{{currentTabQuestionBank}}" wx:for-index="questionIndex" wx:for-item="question">
         <swiper-item class="question-item">
           <view class="item-title">{{question.title}}</view>
           <textarea auto-height placeholder="请输入您的答案" class="item-textarea" maxlength="-1" bindinput="handleGetTextareaChange"></textarea>
@@ -45,17 +43,18 @@
       </block>
     </swiper>
   </view>
-  <!-- 套题 -->
-  <view class="answer-container" wx:if="{{currentNavTab == 3}}">
-    <view class="comming-soon">敬请期待...</view>
-  </view>
-
-  <view class="answer-footer" wx:if="{{currentTabQuestionTotalCount > 0}}">
+  <view class="answer-footer" wx:if="{{ currentTabQuestionBankCount > 0}} ">
     <view class="footer-nav">
       <!-- <view bindtap="handleFromQuestionTap">上一题</view> -->
-      <view class="num-count">{{ currentTabQuestionTotalCount > 0 ? currentQuestionItemTab + 1 : 0 }} / {{currentTabQuestionTotalCount}}</view>
-      <view bindtap="handleNextQuestionTap" wx:if="{{currentTabQuestionTotalCount !== currentQuestionItemTab + 1 && (currentNavTab == 1 || currentNavTab == 2)}}">下一题</view>
-      <view bindtap="handleToResultPage" wx:if="{{currentTabQuestionTotalCount == currentQuestionItemTab + 1}}">提交</view>
+      <view class="num-count">
+        {{ currentTabQuestionBankCount > 0 ? currentQuestionItemTab + 1 : 0 }} / {{currentTabQuestionBankCount}}
+      </view>
+      <view bindtap="handleNextQuestionTap" wx:if="{{currentTabQuestionBankCount !== currentQuestionItemTab + 1 }}">
+        下一题
+      </view>
+      <view bindtap="handleToResultPage" wx:if="{{currentTabQuestionBankCount == currentQuestionItemTab + 1}}">
+        提交
+      </view>
     </view>
   </view>
 </view>

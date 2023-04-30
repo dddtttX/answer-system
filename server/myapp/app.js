@@ -163,7 +163,34 @@ app.get('/api/get_questions_all_info_list', function (req, res) {
         throw error;
       res.json(results);
     })
-  } else {
+  }else if(req.query.type == 2 ){
+    // return
+    con.query((`SELECT * FROM questions as a LEFT JOIN answer as b on a.id = b.id WHERE type = ${req.query.type} ORDER BY a.id `), function (error, results, fields) {
+      if (error)
+        throw error;
+        let newList = []
+        results.forEach(item => {
+          let newId =  newList.find((i) => i.id == item.id)
+          if(!newId){
+            newList.push({
+              id: item.id,
+              title: item.title.split(" "),
+              key: item.key,
+              type: item.key,
+              answers: [item.answer],
+              comTitle: item.comTitle
+            })
+          }else{
+            newId.answers.push(item.answer)
+          }
+        })
+        newList.forEach(item => {
+          item.answers.reverse()
+        })
+      res.json(newList);
+    })
+    
+  }else {
     con.query(`SELECT * FROM questions as a LEFT JOIN options as b on a.id = b.id LEFT JOIN answer as c on a.id = c.id where type = ${req.query.type}  ORDER BY a.id,answer`,
       function (error, results, fields) {
         if (error)
@@ -184,7 +211,7 @@ app.get('/api/get_questions_all_info_list', function (req, res) {
         let newList = []
         rts.forEach(item => {
           let newId = newList.find((i) => i.id == item.id)
-
+          
           if (!newId) {
             newList.push({
               id: item.id, answers: [item.answer],

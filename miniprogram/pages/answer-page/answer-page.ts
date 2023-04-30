@@ -17,14 +17,16 @@ Page({
     currentQuestionListState: [] as any, // -1表示错误，0表示未完成，1表示正确 
     options: [] as number[], //多选时单个题目的临时选项存储数组
     valueList: [] as string[], //问答题答案存储
-
+    mode: 0, // 0 做题， 1 背题
+    isShowQuestionKey: false
   },
 
   // 进入页面时选择默认tab
   enterPageCurrentTap(option: any) {
     let currentNavTab = Number(option.type)
+    let mode = Number(option.mode)
     this.setData({
-      currentNavTab
+      currentNavTab, mode, isShowQuestionKey: mode == 1
     })
     // this.getCurrentQuestionListState(currentNavTab)
   },
@@ -72,7 +74,8 @@ Page({
     this.setData({
       // 删除原本存储的临时options，为下一道题多选题做准备
       // 如果当前selectedOption中存在，则不删除，直接换
-      options: this.data.selectedOption[this.data.currentQuestionItemTab] || []
+      options: this.data.selectedOption[this.data.currentQuestionItemTab] || [],
+
     })
   },
   // 点击上一题
@@ -93,7 +96,7 @@ Page({
       this.setData({
         // 删除原本存储的临时options，为下一道题多选题做准备
         // 如果当前selectedOption中存在，则不删除，直接换
-        options: this.data.selectedOption[this.data.currentQuestionItemTab] || []
+        options: this.data.selectedOption[this.data.currentQuestionItemTab] || [],
       })
     }
   },
@@ -114,7 +117,6 @@ Page({
   handleSelectOptionTap(e: any) {
     let bank = this.data.currentTabQuestionBank // 当前题库
     let tab = this.data.currentNavTab  // 当前题库的索引
-    let itemTab = this.data.currentQuestionItemTab // 当前题目的索引
     let index = e.target.dataset.index // 当前选择的选项
     let currentQuestionListState = this.data.currentQuestionListState
 
@@ -155,26 +157,18 @@ Page({
           return a - b
         })
       }
-      this.setData({
-        options
-      })
-      console.log(this.data.options);
-
+      this.setData({ options })
       if (answers.toString() == options.toString()) {
-        console.log("你答对了捏");
         currentQuestionListState[this.data.currentQuestionItemTab] = 1
         this.setData({ currentQuestionListState })
       } else {
-        console.log("你答错了捏");
         currentQuestionListState[this.data.currentQuestionItemTab] = -1
         this.setData({ currentQuestionListState })
       }
       // 选中的选项拿出来存成数组，以便更改颜色
       let selectedOption = this.data.selectedOption
       selectedOption[this.data.currentQuestionItemTab] = options
-      this.setData({
-        selectedOption
-      })
+      this.setData({ selectedOption })
     }
   },
 
@@ -202,15 +196,40 @@ Page({
 
   // },
 
+  // 填空题，监听表单变化，双向绑定数据
+  handleGetTextInputChange(e: any) {
+    let currentQuestionListState = this.data.currentQuestionListState
+    let index = e.target.dataset.index
+    let value = e.detail.value
+
+    // 此处复用了多选题的处理模式 ~
+    let answers = this.data.currentTabQuestionBank[this.data.currentQuestionItemTab].answers //得到填空题答案
+    // console.log(answers);
+    // 临时options使用，将选项push上去，同时去重和排序
+    let options = this.data.options
+    options[index] = value
+    this.setData({ options })
+    if (answers.toString() == options.toString()) {
+      currentQuestionListState[this.data.currentQuestionItemTab] = 1
+      this.setData({ currentQuestionListState })
+    } else {
+      currentQuestionListState[this.data.currentQuestionItemTab] = -1
+      this.setData({ currentQuestionListState })
+    }
+    // 选中的选项拿出来存成数组，以便更改颜色
+    let selectedOption = this.data.selectedOption
+    selectedOption[this.data.currentQuestionItemTab] = options
+    this.setData({ selectedOption })
+
+  },
+
   // 问答题，监听表单变化，双向绑定数据
   handleGetTextareaChange(e: any) {
     let currentQuestionItemTab = this.data.currentQuestionItemTab
     let valueList = this.data.valueList
     let value = e.detail.value
     valueList[currentQuestionItemTab] = value
-    this.setData({
-      valueList
-    })
+    this.setData({ valueList })
   },
 
   // 初始化题目信息
@@ -227,6 +246,7 @@ Page({
       success(res: any) {
         var currentTabQuestionBank
         if (that.data.currentNavTab == 0 || that.data.currentNavTab == 1) {
+          // 选择题
           currentTabQuestionBank = res.data.map((item: any) => {
             item.answers = (item.answers).map((i: number | string) => {
               i = Number(i)
@@ -234,16 +254,24 @@ Page({
             })
             return item
           })
-        }else{
-          currentTabQuestionBank
+        } else if (that.data.currentNavTab == 2) {
+          // 填空题
+          currentTabQuestionBank = res.data.map((item: any) => {
+            // item.title = (item.title).map((i: string) => {
+            //   return i
+            // })
+            return item
+          })
+        } else if (that.data.currentNavTab == 3) {
+          // 问答题
+          currentTabQuestionBank = res.data
         }
-        that.setData({
-          currentTabQuestionBank : res.data
-        })
-        console.log(that.data.currentTabQuestionBank);
+        that.setData({ currentTabQuestionBank })
+        that.initCurrentTabQuestionsBankCount(that.data.currentNavTab)
       }
     })
-    that.initCurrentTabQuestionsBankCount(that.data.currentNavTab)
+
+
   },
 
 
@@ -275,9 +303,6 @@ Page({
     this.setData({ currentQuestionListState, selectedOption })
 
   },
-
-
-
 
   /**
    * 生命周期函数--监听页面加载

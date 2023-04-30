@@ -5,34 +5,28 @@ Page({
    * 页面的初始数据
    */
   data: {
-    questionType:["单选题","多选题","填空题","问答题",]
+    questionType: ["单选题", "多选题", "填空题", "问答题"],
+    mode: 0 // 0 做题， 1 背题
   },
 
 
-  goToAnswerTap(e:any){
+  goToAnswerTap(e: any) {
     let type = e.target.dataset.type
+    let mode = this.data.mode
     wx.navigateTo({
-      url:`../answer-page/answer-page?type=${type}`
+      url: `../answer-page/answer-page?type=${type}&mode=${mode}`
     })
-    
   },
 
+  handleChangeModeTap(e: any) {
+    let mode = Number(e.target.dataset.index)
+    this.setData({ mode })
+  },
   /**
    * 生命周期函数--监听页面加载
    */
   onLoad() {
-    wx.request({
-      url:"www.xdtwebsite.top",
-      method:"GET",
-      success: function (req,res,err){
-        if (err) {
-          return
-        }else{
-          return res.data
-        }
-        
-      }
-    })
+
 
   },
 

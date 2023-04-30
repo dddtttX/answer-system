@@ -1,13 +1,51 @@
 /* pages/select-page/select-page.wxss */
-.select-page-container{
-  .select-title{
+.select-page-container {
+  .select-mode {
+    display: flex;
+    flex-direction: row;
+    position: absolute;
+    top: 80rpx;
+    right: 30rpx;
+    line-height: 60rpx;
+    font-size: 30rpx;
+    font-weight: 600;
+
+    .mode-title {
+      padding-left: 12rpx;
+      padding-right: 12rpx;
+      border: #cb413d 5rpx solid;
+      color: #cb413d;
+    }
+
+    .mode-title:nth-child(1) {
+      border-radius: 30rpx 0 0 30rpx;
+    }
+
+    .mode-title:nth-child(2) {
+      border-radius: 0 30rpx 30rpx 0;
+    }
+
+    .mode-title-current {
+      background-color: #cb413d;
+      color: #fff;
+
+    }
+
+  }
+
+  .current-slect {}
+
+
+
+  .select-title {
     margin-top: 300rpx;
     font-size: 56rpx;
     font-weight: 800;
     text-align: center;
     color: #d3413b;
   }
-  .type-list{
+
+  .type-list {
     margin-top: 100rpx;
     padding-left: 40rpx;
     padding-right: 40rpx;
@@ -17,7 +55,8 @@
     text-align: center;
     justify-content: center;
   }
-  .type-item{
+
+  .type-item {
     width: 300rpx;
     margin: 30rpx;
     font-size: 36rpx;

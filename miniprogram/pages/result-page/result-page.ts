@@ -8,7 +8,7 @@ Page({
     data: {
         questionBank: [] as any,
         currentQuestionListState: [] as number[],
-        selectedOption: [] as number[],
+        selectedOption: [] as any,
         score: "", //分数
         count: 0, //正确的题目数量
         currentShowItem: {},
@@ -80,6 +80,35 @@ Page({
                 this.setData({ yourAnswer })
             })
         }
+        // 填空题
+        if (this.data.currentNavTab == 2) {
+            let selectedOption = this.data.selectedOption
+            let currentTapItem = this.data.currentTapItem
+            let arr = selectedOption[currentTapItem]
+            let yourAnswer = ""
+            if (arr === null  || arr.length == 0) {
+                // 所有空都没有填
+                yourAnswer = "你未填写答案"
+            } else {
+                // 存在一个空没有填
+                let newArr =  arr.map((item: any) => {
+                    console.log(item);
+                    
+                    if (item === null || item === "") {
+                        item = "未填写"
+                    }
+                    return item
+                })
+                console.log(newArr);
+                
+                yourAnswer = newArr.toString()
+            }
+            this.setData({ yourAnswer })
+
+
+        }
+
+        // 问答题
         if (this.data.currentNavTab == 3) {
             let yourAnswer = this.data.valueList[this.data.currentTapItem] || "未填写"
             this.setData({ yourAnswer })
@@ -93,7 +122,7 @@ Page({
         let currentQuestionListState = JSON.parse(option.currentQuestionListState || "")
         let selectedOption = JSON.parse(option.selectedOption || "")
         let currentNavTab = Number(option.currentNavTab)
-        let valueList =  JSON.parse(option.valueList || "")
+        let valueList = JSON.parse(option.valueList || "")
 
         this.setData({
             questionBank: questionsBank || [],

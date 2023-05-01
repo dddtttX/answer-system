@@ -17,6 +17,7 @@ Page({
     currentQuestionListState: [] as any, // -1表示错误，0表示未完成，1表示正确 
     options: [] as number[], //多选时单个题目的临时选项存储数组
     valueList: [] as string[], //问答题答案存储
+    valueLengthList: [] as number[], // 填空题答案长度存储
     mode: 0, // 0 做题， 1 背题
     isShowQuestionKey: false
   },
@@ -35,34 +36,44 @@ Page({
     let index = e.target.dataset.index
     if (index == this.data.currentNavTab) { return }
     let that = this
-    // 警告
-    wx.showModal({
-      title: '警告',
-      content: `放弃已完成的${this.data.questionType[this.data.currentNavTab]}，切换到${this.data.questionType[index]}`,
-      success: function (res) {
-        if (res.confirm) { //这里是点击了确定以后
-          that.setData({
-            currentNavTab: index,
-            currentQuestionItemTab: 0
-          })
-          // 获取id
-          that.initCurrentTabQuestionsBank()
-          // that.initCurrentTabQuestionItemAnswerList()
-          // 每次切换都清空已选择项和状态，以及问答题填写情况
-          // that.setData({
-          //   selectedOption: [],
-          //   // 删除原本存储的临时options，为下一道题多选题做准备
-          //   options: [],
-          //   valueList: []
-          // })
-          // 获取currentQuestionListState
-          // that.getCurrentQuestionListState(index)
-          // 初始化
-        } else {//这里是点击了取消以后
-          return
+    if (this.data.mode == 0) {
+      // 警告
+      wx.showModal({
+        title: '警告',
+        content: `放弃已完成的${this.data.questionType[this.data.currentNavTab]}，切换到${this.data.questionType[index]}`,
+        success: function (res) {
+          if (res.confirm) { //这里是点击了确定以后
+            that.setData({
+              currentNavTab: index,
+              currentQuestionItemTab: 0
+            })
+            // 获取id
+            that.initCurrentTabQuestionsBank()
+            // that.initCurrentTabQuestionItemAnswerList()
+            // 每次切换都清空已选择项和状态，以及问答题填写情况
+            // that.setData({
+            //   selectedOption: [],
+            //   // 删除原本存储的临时options，为下一道题多选题做准备
+            //   options: [],
+            //   valueList: []
+            // })
+            // 获取currentQuestionListState
+            // that.getCurrentQuestionListState(index)
+            // 初始化
+          } else {//这里是点击了取消以后
+            return
+          }
         }
-      }
-    })
+      })
+    }else{
+      this.setData({
+        currentNavTab: index,
+        currentQuestionItemTab: 0
+      })
+      that.initCurrentTabQuestionsBank()
+
+    }
+
   },
 
   // 滑动题目
@@ -256,12 +267,20 @@ Page({
           })
         } else if (that.data.currentNavTab == 2) {
           // 填空题
-          currentTabQuestionBank = res.data.map((item: any) => {
+          let valueLengthList = that.data.valueLengthList
+          currentTabQuestionBank = res.data.map((item: any ,index:number) => {
             // item.title = (item.title).map((i: string) => {
             //   return i
             // })
+            let valueLength = []
+            valueLength = (item.answers).map((i: string) => {
+              return i.length
+            })
+            valueLengthList[index] = valueLength
             return item
           })
+          that.setData({ valueLengthList })
+
         } else if (that.data.currentNavTab == 3) {
           // 问答题
           currentTabQuestionBank = res.data

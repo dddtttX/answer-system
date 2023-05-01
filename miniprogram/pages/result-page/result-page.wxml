@@ -2,12 +2,8 @@
 <!-- pages/result-page/result-page.wxml -->
 <view class="result-page-container">
   <!-- 单选，多选 -->
-  <view class="result-title" wx:if="{{currentNavTab !== 3 }}">
-    您做对了 {{count}} 道题目
-  </view>
-  <view class="result-title" wx:if="{{currentNavTab !== 3 }}">
-    你的正确率为 {{(accuracyRate)}}%
-  </view>
+  <view class="result-title" wx:if="{{currentNavTab !== 3 }}">您做对了 {{count}} 道题目</view>
+  <view class="result-title" wx:if="{{currentNavTab !== 3 }}">你的正确率为 {{(accuracyRate)}}%</view>
   <view class="result-title" style="color: grey; margin-top: 20rpx; font-size: 28rpx;">
     点击题号查看解析
   </view>
@@ -25,8 +21,12 @@
       {{ index+1 }}
     </view>
     <view class="result-item" wx:if="{{isShowCurrentShowItem}}">
-      <view class="item-title" wx:if="{{currentNavTab !== 2}}">[题目{{currentTapItem+1}} ]：{{currentShowItem.title}}</view>
-      <view class="item-title" wx:if="{{currentNavTab == 2}}">[题目{{currentTapItem+1}} ]：{{currentShowItem.comTitle}}</view>
+      <view class="item-title" wx:if="{{currentNavTab !== 2}}">
+        [题目{{currentTapItem+1}} ]：{{currentShowItem.title}}
+      </view>
+      <view class="item-title" wx:if="{{currentNavTab == 2}}">
+        [题目{{currentTapItem+1}} ]：{{currentShowItem.comTitle}}
+      </view>
       <!-- 单选选项、答案 -->
       <view wx:if="{{currentNavTab == 0}}">
         <!-- 单选选项 -->
@@ -59,9 +59,18 @@
           </view>
         </view>
       </view>
-      <!-- 填空题答案-->
+
       <!-- 填空题、问答题你的答案 -->
-      <view class="item-your-answer" wx:if="{{currentNavTab == 2 || currentNavTab == 3 }}">[你的答案]:{{yourAnswer}}</view>
+      <view class="item-your-answer" wx:if="{{currentNavTab == 2 || currentNavTab == 3 }}">
+        [你的答案]:{{yourAnswer}}
+      </view>
+      <!-- 填空题正确答案 -->
+      <view class="item-answer {{currentQuestionListState[currentTapItem] == 1 ? 'true-item-result' : ''}} ">
+        [正确答案]:
+        <view wx:for="{{currentShowItem.answers}}" wx:for-item="answer" wx:for-index="answerIndex">
+          {{ answerIndex + 1 }}、{{answer}}
+        </view>
+      </view>
       <view class="item-key {{currentQuestionListState[currentTapItem] == 1  ? 'true-item-result' : ''}}">
         [解析]
         <view>{{currentShowItem.key}}</view>

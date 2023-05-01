@@ -9,6 +9,7 @@
       </view>
     </view>
   </view>
+
   <!-- 刷题模式 -->
   <view style="height: 80%;" wx:if="{{mode === 0}}">
     <!-- 选择题：单选，多选 -->
@@ -38,9 +39,9 @@
         <block wx:for="{{currentTabQuestionBank}}" wx:for-index="questionIndex" wx:for-item="question">
           <swiper-item class="question-item question-item-fill ">
             <view class="" style="line-height:80rpx; padding-left: 50rpx;padding-right: 50rpx; ">
-              <view class=" item-title-fill" wx:for="{{question.title}}" wx:for-item="title" wx:for-index="titleIndex">
+              <view class=" item-title-fill"  wx:for="{{question.title}}" wx:for-item="title" wx:for-index="titleIndex">
                 {{title}}
-                <input bindinput="handleGetTextInputChange" data-index="{{titleIndex}}" wx:if="{{titleIndex !== question.title.length - 1}}" placeholder="" class="item-input-fill" />
+                <input bindinput="handleGetTextInputChange" data-index="{{titleIndex}}" wx:if="{{titleIndex !== question.title.length - 1}}" placeholder="" class="item-input-fill" style="width:{{valueLengthList[questionIndex][titleIndex] * 40}}rpx" />
               </view>
             </view>
           </swiper-item>
@@ -59,6 +60,7 @@
       </swiper>
     </view>
   </view>
+
   <!-- 背题模式 -->
   <view style="height: 80%;" wx:if="{{mode === 1}}">
     <!-- 选择题：单选，多选 -->
@@ -69,7 +71,7 @@
             <view class="item-title">{{question.title}}</view>
             <view class="item-options" wx:for="{{question.options}}" wx:for-index="optionIndex" wx:for-item="option">
               <!-- 单选，此处分类为了变色调整 -->
-              <view wx:if="{{currentNavTab == 0}}" class="option-item {{currentTabQuestionBank[questionIndex].answers[0] === optionIndex ? 'current-option-item' : ''}}" >
+              <view wx:if="{{currentNavTab == 0}}" class="option-item {{currentTabQuestionBank[questionIndex].answers[0] === optionIndex ? 'current-option-item' : ''}}">
                 {{answerUtil.formatIndex(optionIndex)}} 、{{option}}
               </view>
               <!-- 多选，此处分类为了变色调整 -->
@@ -88,10 +90,16 @@
         <block wx:for="{{currentTabQuestionBank}}" wx:for-index="questionIndex" wx:for-item="question">
           <swiper-item class="question-item question-item-fill ">
             <view class="" style="line-height:80rpx; padding-left: 50rpx;padding-right: 50rpx; ">
-              <view class=" item-title-fill" wx:for="{{question.title}}" wx:for-item="title" wx:for-index="titleIndex">
-                {{title}}
-                <input bindinput="handleGetTextInputChange" data-index="{{titleIndex}}" wx:if="{{titleIndex !== question.title.length - 1}}" placeholder="" class="item-input-fill" />
+              <view class="item-title-fill">{{question.comTitle}}</view>
+              <view class="" style="line-height:80rpx">[答案]</view>
+              <view class="item-answer-fill" style="display:inline-block " wx:for="{{question.answers}}" wx:for-item="answer" wx:for-index="answerIndex">
+                {{answerIndex+1}}、
+                <text style="text-decoration: underline; padding-right:20rpx">{{answer}}</text>
               </view>
+              <text>
+              [解析]     
+              </text>
+              <view >{{question.key}}</view>
             </view>
           </swiper-item>
         </block>
@@ -110,9 +118,6 @@
       </swiper>
     </view>
   </view>
-
-
-
   <!-- 底部 -->
   <view class="answer-footer" wx:if="{{ currentTabQuestionBankCount > 0}} ">
     <view class="footer-nav">

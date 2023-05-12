@@ -64,13 +64,13 @@
       <view class="item-your-answer" wx:if="{{currentNavTab == 2 || currentNavTab == 3 }}">
         [你的答案]:{{yourAnswer}}
       </view>
-      <!-- 填空题正确答案 -->
       <view class="item-answer {{currentQuestionListState[currentTapItem] == 1 ? 'true-item-result' : ''}} ">
         [正确答案]:
         <view wx:for="{{currentShowItem.answers}}" wx:for-item="answer" wx:for-index="answerIndex">
           {{ answerIndex + 1 }}、{{answer}}
         </view>
       </view>
+      <!-- 所有题型解析 -->
       <view class="item-key {{currentQuestionListState[currentTapItem] == 1  ? 'true-item-result' : ''}}">
         [解析]
         <view>{{currentShowItem.key}}</view>

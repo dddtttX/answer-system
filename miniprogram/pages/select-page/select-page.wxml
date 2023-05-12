@@ -8,7 +8,7 @@
       背题
     </view>
   </view>
-  <view class="select-title">请选择题目</view>
+  <view class="select-title">选择学习模式与题型</view>
   <view class="type-list">
     <view class="type-item" wx:for="{{questionType}}" bindtap="goToAnswerTap" wx:key="index" data-type="{{index}}">
       {{item}}

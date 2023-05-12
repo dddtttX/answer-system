@@ -19,7 +19,8 @@ Page({
     valueList: [] as string[], //问答题答案存储
     valueLengthList: [] as number[], // 填空题答案长度存储
     mode: 0, // 0 做题， 1 背题
-    isShowQuestionKey: false
+    isShowQuestionKey: false,
+    pageList: [] as number[] //页码数组，用于实现picker翻页
   },
 
   // 进入页面时选择默认tab
@@ -65,7 +66,7 @@ Page({
           }
         }
       })
-    }else{
+    } else {
       this.setData({
         currentNavTab: index,
         currentQuestionItemTab: 0
@@ -114,14 +115,45 @@ Page({
 
   // 提交跳转到结果页面
   handleToResultPage() {
-    let questionsBank = JSON.stringify(this.data.currentTabQuestionBank)
-    let currentQuestionListState = JSON.stringify(this.data.currentQuestionListState)
-    let currentNavTab = this.data.currentNavTab
-    let valueList = JSON.stringify(this.data.valueList)
-    let selectedOption = JSON.stringify(this.data.selectedOption)
-    wx.navigateTo({
-      url: `../result-page/result-page?currentQuestionListState=${currentQuestionListState}&questionsBank=${questionsBank}&currentNavTab=${currentNavTab}&valueList=${valueList}&selectedOption=${selectedOption}`
+    let that = this
+    // 警告
+    let isDiscompletedList = new Array()
+    this.data.currentQuestionListState.forEach((item: number, index: number) => {
+      if (item == 0) {
+        isDiscompletedList.push(index)
+      }
     })
+    console.log(isDiscompletedList);
+    if (isDiscompletedList.length) {
+      let list = isDiscompletedList.join("、")
+      wx.showModal({
+        title: "警告",
+        content: `您还有第${list}题没有完成，是否确认提交`,
+        success: function (res: any) {
+          if (res.confirm) {
+            let questionsBank = JSON.stringify(that.data.currentTabQuestionBank)
+            let currentQuestionListState = JSON.stringify(that.data.currentQuestionListState)
+            let currentNavTab = that.data.currentNavTab
+            let valueList = JSON.stringify(that.data.valueList)
+            let selectedOption = JSON.stringify(that.data.selectedOption)
+            wx.navigateTo({
+              url: `../result-page/result-page?currentQuestionListState=${currentQuestionListState}&questionsBank=${questionsBank}&currentNavTab=${currentNavTab}&valueList=${valueList}&selectedOption=${selectedOption}`
+            })
+          } else {
+            return
+          }
+        }
+      })
+    } else {
+      let questionsBank = JSON.stringify(that.data.currentTabQuestionBank)
+      let currentQuestionListState = JSON.stringify(that.data.currentQuestionListState)
+      let currentNavTab = that.data.currentNavTab
+      let valueList = JSON.stringify(that.data.valueList)
+      let selectedOption = JSON.stringify(that.data.selectedOption)
+      wx.navigateTo({
+        url: `../result-page/result-page?currentQuestionListState=${currentQuestionListState}&questionsBank=${questionsBank}&currentNavTab=${currentNavTab}&valueList=${valueList}&selectedOption=${selectedOption}`
+      })
+    }
   },
 
   // 点击选项
@@ -243,11 +275,19 @@ Page({
     this.setData({ valueList })
   },
 
+  // 选择页码并完成跳转
+  handleToSelectedPage(e: any) {
+    let page = Number(e.detail.value)
+    this.setData({
+      currentQuestionItemTab: page
+    })
+  },
+
   // 初始化题目信息
   initCurrentTabQuestionsBank() {
     let that = this
     wx.request({
-      url: 'http://localhost:8087/api/get_questions_all_info_list',
+      url: 'http://8.134.149.248:3001/api/get_questions_all_info_list',
       data: {
         type: this.data.currentNavTab
       },
@@ -268,13 +308,13 @@ Page({
         } else if (that.data.currentNavTab == 2) {
           // 填空题
           let valueLengthList = that.data.valueLengthList
-          currentTabQuestionBank = res.data.map((item: any ,index:number) => {
+          currentTabQuestionBank = res.data.map((item: any, index: number) => {
             // item.title = (item.title).map((i: string) => {
             //   return i
             // })
             let valueLength = []
             valueLength = (item.answers).map((i: string) => {
-              return i.length
+              return i.length * 2
             })
             valueLengthList[index] = valueLength
             return item
@@ -298,7 +338,7 @@ Page({
   initCurrentTabQuestionsBankCount(type: number) {
     let that = this
     wx.request({
-      url: 'http://localhost:8087/api/get_questions_total_count_by_TYPE',
+      url: 'http://8.134.149.248:3001/api/get_questions_total_count_by_TYPE',
       data: {
         type
       },
@@ -310,17 +350,29 @@ Page({
           currentTabQuestionBankCount: res.data[0]["COUNT (*)"]
         })
         // 初始化题目总数后 初始化状态列表以及选中题目列表
-        that.initcurrentQuestionListState()
+        that.initCurrentQuestionListState()
+        // 初始化题目总数后 初始化页码数组
+        that.initPageList()
       }
     })
   },
 
   // 初始化状态数组
-  initcurrentQuestionListState() {
+  initCurrentQuestionListState() {
     let currentQuestionListState = new Array(this.data.currentTabQuestionBankCount).fill(0)
     let selectedOption = new Array(this.data.currentTabQuestionBankCount)
     this.setData({ currentQuestionListState, selectedOption })
+  },
 
+  // 初始化页码数组
+  initPageList() {
+    let length = this.data.currentTabQuestionBankCount
+    let initPage = 1
+    let pageList = new Array(length).fill(0)
+    pageList = pageList.map((item) => {
+      return item = initPage++
+    })
+    this.setData({ pageList })
   },
 
   /**
@@ -329,8 +381,6 @@ Page({
   onLoad(option) {
     this.enterPageCurrentTap(option)
     this.initCurrentTabQuestionsBank()
-
-
   },
 
   /**

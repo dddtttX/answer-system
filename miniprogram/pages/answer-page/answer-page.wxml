@@ -9,7 +9,6 @@
       </view>
     </view>
   </view>
-
   <!-- 刷题模式 -->
   <view style="height: 80%;" wx:if="{{mode === 0}}">
     <!-- 选择题：单选，多选 -->
@@ -39,7 +38,7 @@
         <block wx:for="{{currentTabQuestionBank}}" wx:for-index="questionIndex" wx:for-item="question">
           <swiper-item class="question-item question-item-fill ">
             <view class="" style="line-height:80rpx; padding-left: 50rpx;padding-right: 50rpx; ">
-              <view class=" item-title-fill"  wx:for="{{question.title}}" wx:for-item="title" wx:for-index="titleIndex">
+              <view class=" item-title-fill" wx:for="{{question.title}}" wx:for-item="title" wx:for-index="titleIndex">
                 {{title}}
                 <input bindinput="handleGetTextInputChange" data-index="{{titleIndex}}" wx:if="{{titleIndex !== question.title.length - 1}}" placeholder="" class="item-input-fill" style="width:{{valueLengthList[questionIndex][titleIndex] * 40}}rpx" />
               </view>
@@ -60,7 +59,6 @@
       </swiper>
     </view>
   </view>
-
   <!-- 背题模式 -->
   <view style="height: 80%;" wx:if="{{mode === 1}}">
     <!-- 选择题：单选，多选 -->
@@ -79,6 +77,9 @@
                 {{answerUtil.formatIndex(optionIndex)}} 、{{option}}
               </view>
             </view>
+            <text class="item-title" style="color: gray; font-size: 28rpx;font-weight: 400;">
+              [解析]{{question.key}}
+            </text>
           </swiper-item>
         </block>
       </swiper>
@@ -91,15 +92,14 @@
           <swiper-item class="question-item question-item-fill ">
             <view class="" style="line-height:80rpx; padding-left: 50rpx;padding-right: 50rpx; ">
               <view class="item-title-fill">{{question.comTitle}}</view>
-              <view class="" style="line-height:80rpx">[答案]</view>
-              <view class="item-answer-fill" style="display:inline-block " wx:for="{{question.answers}}" wx:for-item="answer" wx:for-index="answerIndex">
+              <view class="" style="line-height:80rpx;">[答案]</view>
+              <view class="item-answer-fill" style="display:inline-block" wx:for="{{question.answers}}" wx:for-item="answer" wx:for-index="answerIndex">
                 {{answerIndex+1}}、
                 <text style="text-decoration: underline; padding-right:20rpx">{{answer}}</text>
               </view>
-              <text>
-              [解析]     
+              <text class="item-title" style="color: gray; font-size: 28rpx;font-weight: 400;">
+                [解析]{{question.key}}
               </text>
-              <view >{{question.key}}</view>
             </view>
           </swiper-item>
         </block>
@@ -122,9 +122,12 @@
   <view class="answer-footer" wx:if="{{ currentTabQuestionBankCount > 0}} ">
     <view class="footer-nav">
       <!-- <view bindtap="handleFromQuestionTap">上一题</view> -->
-      <view class="num-count">
-        {{ currentTabQuestionBankCount > 0 ? currentQuestionItemTab + 1 : 0 }} / {{currentTabQuestionBankCount}}
-      </view>
+      <picker bindchange="handleToSelectedPage" value="{{currentQuestionItemTab}}" range="{{pageList}}">
+        <view class="num-count">
+          {{ currentTabQuestionBankCount > 0 ? currentQuestionItemTab + 1 : 0 }} / {{currentTabQuestionBankCount}}
+          <!-- {{ currentQuestionItemTab+ 1 }} -->
+        </view>
+      </picker>
       <view bindtap="handleNextQuestionTap" wx:if="{{currentTabQuestionBankCount !== currentQuestionItemTab + 1 }}">
         下一题
       </view>

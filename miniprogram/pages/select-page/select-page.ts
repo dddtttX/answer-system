@@ -20,7 +20,13 @@ Page({
 
   handleChangeModeTap(e: any) {
     let mode = Number(e.target.dataset.index)
+    if (mode == this.data.mode) { return }
     this.setData({ mode })
+    wx.showToast({
+      title: `切换${ mode ==  0 ? '刷题' : '背题' }模式`,
+      icon: 'success',
+      duration: 1000
+    })
   },
   /**
    * 生命周期函数--监听页面加载

@@ -120,7 +120,7 @@ Page({
     let isDiscompletedList = new Array()
     this.data.currentQuestionListState.forEach((item: number, index: number) => {
       if (item == 0) {
-        isDiscompletedList.push(index)
+        isDiscompletedList.push(index + 1)
       }
     })
     console.log(isDiscompletedList);
@@ -128,7 +128,8 @@ Page({
       let list = isDiscompletedList.join("、")
       wx.showModal({
         title: "警告",
-        content: `您还有第${list}题没有完成，是否确认提交`,
+        content: `您还有第${list}题没有完成，
+        是否确认提交`,
         success: function (res: any) {
           if (res.confirm) {
             let questionsBank = JSON.stringify(that.data.currentTabQuestionBank)
@@ -285,6 +286,7 @@ Page({
 
   // 初始化题目信息
   initCurrentTabQuestionsBank() {
+    wx.showLoading({ title: "请求中" })
     let that = this
     wx.request({
       url: 'http://8.134.149.248:3001/api/get_questions_all_info_list',
@@ -295,6 +297,17 @@ Page({
         'content-type': 'application/json' // 默认值
       },
       success(res: any) {
+        if (res.statusCode !== 200) {
+          wx.hideLoading()
+          wx.showToast({
+            title: "请求超时", icon: "error", duration: 5000, success: function () {
+              setTimeout(() => {
+                wx.navigateTo({ url: '../select-page/select-page' })
+              }, 5000)
+            }
+          })
+          return
+        }
         var currentTabQuestionBank
         if (that.data.currentNavTab == 0 || that.data.currentNavTab == 1) {
           // 选择题
@@ -327,7 +340,8 @@ Page({
         }
         that.setData({ currentTabQuestionBank })
         that.initCurrentTabQuestionsBankCount(that.data.currentNavTab)
-      }
+        wx.hideLoading()
+      },
     })
 
 
@@ -369,7 +383,7 @@ Page({
     let length = this.data.currentTabQuestionBankCount
     let initPage = 1
     let pageList = new Array(length).fill(0)
-    pageList = pageList.map((item) => {
+    pageList = pageList.map(item => {
       return item = initPage++
     })
     this.setData({ pageList })

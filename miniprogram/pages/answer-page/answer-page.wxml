@@ -131,7 +131,7 @@
       <view bindtap="handleNextQuestionTap" wx:if="{{currentTabQuestionBankCount !== currentQuestionItemTab + 1 }}">
         下一题
       </view>
-      <view bindtap="handleToResultPage" wx:if="{{currentTabQuestionBankCount == currentQuestionItemTab + 1}}">
+      <view bindtap="handleToResultPage" wx:if="{{currentTabQuestionBankCount == currentQuestionItemTab + 1 && mode == 0}}">
         提交
       </view>
     </view>

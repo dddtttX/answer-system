@@ -59,15 +59,14 @@
           </view>
         </view>
       </view>
-
       <!-- 填空题、问答题你的答案 -->
       <view class="item-your-answer" wx:if="{{currentNavTab == 2 || currentNavTab == 3 }}">
         [你的答案]:{{yourAnswer}}
-      </view>
-      <view class="item-answer {{currentQuestionListState[currentTapItem] == 1 ? 'true-item-result' : ''}} ">
-        [正确答案]:
-        <view wx:for="{{currentShowItem.answers}}" wx:for-item="answer" wx:for-index="answerIndex">
-          {{ answerIndex + 1 }}、{{answer}}
+        <view class="item-answer {{currentQuestionListState[currentTapItem] == 1 ? 'true-item-result' : ''}} ">
+          [正确答案]:
+          <view wx:for="{{currentShowItem.answers}}" wx:for-item="answer" wx:for-index="answerIndex">
+            {{ answerIndex + 1 }}、{{answer}}
+          </view>
         </view>
       </view>
       <!-- 所有题型解析 -->
